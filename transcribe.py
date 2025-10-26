@@ -5,7 +5,7 @@ import sys
 # --- Настройки ---
 # Модели: tiny, base, small, medium, large.
 # 'tiny' - самая быстрая, 'medium' - хороший баланс для русского языка.
-MODEL_SIZE = "medium"
+MODEL_SIZE = "tiny"
 
 def transcribe_audio(audio_file_path):
     """
@@ -29,6 +29,8 @@ def transcribe_audio(audio_file_path):
         processing_time = end_time - start_time
         print(f"Транскрибация завершена за {processing_time:.2f} секунд.")
 
+        print(result["text"].strip())
+
         # Сохранение результата в файл
         with open(output_file_path, "w", encoding="utf-8") as f:
             f.write(result["text"])
@@ -36,8 +38,10 @@ def transcribe_audio(audio_file_path):
 
     except FileNotFoundError:
         print(f"Ошибка: Файл не найден по пути '{audio_file_path}'")
+        sys.exit(1)
     except Exception as e:
         print(f"Произошла ошибка: {e}")
+        sys.exit(1)
 
 if __name__ == "__main__":
     if len(sys.argv) > 1:
@@ -46,7 +50,6 @@ if __name__ == "__main__":
         transcribe_audio(file_to_process)
     else:
         # Если аргумент не передан, используется файл по умолчанию
-        print("Путь к аудиофайлу не указан. Используется тестовый файл 'sample_audio.mp3'.")
         print("Для обработки своего файла, запустите: python transcribe.py /путь/к/вашему/файлу.mp3\n")
-        transcribe_audio("sample_audio.mp3")
+        sys.exit(1)
 
